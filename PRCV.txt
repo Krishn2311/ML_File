@@ -1,0 +1,570 @@
+EXPERIMENT 1
+
+Aim: Write a MATLAB/Python function that computes the value of the Gaussian distribution N(m,s) at given vector X and plot the effect of varying mean and variance to the normal distribution.
+Theory: The Gaussian distribution (also known as the Normal distribution) is one of the most important probability distributions in statistics and machine learning. It is widely used to model real-world phenomena such as heights, exam scores, noise in signals, and measurement errors.
+A Gaussian distribution with mean μ and variance σ^2 is defined by the probability
+density function (PDF):
+
+Where:
+x = random variable
+μ = mean (center of the distribution)
+σ = standard deviation
+
+Program:
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Gaussian Probability Density Function
+def gaussian_pdf(x, m=0, s=1):
+    coeff = 1 / (s * np.sqrt(2 * np.pi))
+    exponent = np.exp(-((x - m) ** 2) / (2 * s ** 2))
+    return coeff * exponent
+
+# Range of x values
+X = np.linspace(-10, 10, 400)
+
+plt.figure(figsize=(12, 5))
+
+# -----------------------------
+# 1. Effect of varying MEAN
+# -----------------------------
+plt.subplot(1, 2, 1)
+for m in [-4, 0, 3]:
+    plt.plot(X, gaussian_pdf(X, m=m, s=1), label=f"mean={m}, sd=1")
+
+plt.title("Effect of Varying Mean")
+plt.xlabel("X")
+plt.ylabel("Probability Density")
+plt.legend()
+
+# -----------------------------
+# 2. Effect of varying STANDARD DEVIATION
+# -----------------------------
+plt.subplot(1, 2, 2)
+for s in [0.5, 1, 2]:
+    plt.plot(X, gaussian_pdf(X, m=0, s=s), label=f"mean=0, sd={s}")
+
+plt.title("Effect of Varying Standard Deviation")
+plt.xlabel("X")
+plt.ylabel("Probability Density")
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 2
+AIM: Implementation of Gradient descent
+THEORY:
+Gradient Descent is an iterative optimization algorithm used to minimize a cost function by adjusting model parameters in the direction of the steepest descent of the function’s gradient. In simple terms, it finds the optimal values of weights and biases by gradually reducing the error between predicted and actual outputs.
+
+Mathematical Formula
+
+Let:
+
+J(θ) = cost/loss function
+θ = parameters (weights, bias, etc.)
+α = learning rate
+∂J(θ)/J(θ) = gradient of the cost function with respect to the parameter
+
+Then the update rule is:
+Learning Rate (α)
+
+The learning rate controls how big a step is taken:
+
+Too large → may overshoot the minimum and diverge
+Too small → converges very slowly
+
+Applications
+
+Linear Regression
+Logistic Regression
+Neural Network Training
+Support Vector Machines
+Saurav Malik	06017702722
+
+CODE:
+import matplotlib.pyplot as plt
+
+def gradient_descent(gradient, start, learning_rate, n_iterations): x = start
+x_values = [x] f_values = [x**2]
+
+print(f"Iteration 0: x = {x:.6f}, f(x) = {x**2:.6f}") for i in range(1, n_iterations + 1):
+grad = gradient(x)
+x = x - learning_rate * grad x_values.append(x) f_values.append(x**2)
+print(f"Iteration {i}: x = {x:.6f}, f(x) = {x**2:.6f}") return x, x_values, f_values
+def gradient(x): return 2 * x
+
+# Parameters 
+start = 10
+learning_rate = 0.1
+n_iterations = 10
+
+min_x, x_vals, f_vals = gradient_descent(gradient, start, learning_rate, n_iterations)
+
+# Plotting 
+plt.figure(figsize=(10,5))
+
+plt.subplot(1, 2, 1) plt.plot(range(len(x_vals)), x_vals, marker='o') plt.title('Value of x over iterations') plt.xlabel('Iteration')
+plt.ylabel('x')
+
+plt.subplot(1, 2, 2)
+plt.plot(range(len(f_vals)), f_vals, marker='o', color='red') plt.title('Value of f(x) = x^2 over iterations') plt.xlabel('Iteration')
+plt.ylabel('f(x)') plt.tight_layout() plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 3
+AIM: Implementation of Linear Regression using Gradient descent
+THEORY:
+Linear Regression is a supervised learning algorithm that models the relationship between a dependent variable y and one or more independent variables x. It assumes a linear relationship:
+
+
+where    m    is    the    slope    and    c    is    the    intercept. The goal is to minimize the cost function (Mean Squared Error):
+
+
+Using Gradient Descent, parameters are updated iteratively:
+
+
+where	α	is	the	learning	rate. The process continues until the cost function converges to its minimum value, resulting in the best-fitting line through the data.
+
+CODE:
+# --- Linear Regression using Gradient Descent --- 
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Generate synthetic data
+X = np.linspace(0, 10, 100)
+y = 2.5 * X + np.random.randn(100) * 2
+
+# Initialize parameters m, c = 0, 0
+L = 0.001 
+# learning rate 
+epochs = 500
+losses = []
+
+# Gradient Descent
+for _ in range(epochs): y_pred = m * X + c
+D_m = (-2/len(X)) * sum(X * (y - y_pred))
+
+D_c = (-2/len(X)) * sum(y - y_pred) m -= L * D_m
+c -= L * D_c
+loss = np.mean((y - y_pred)**2) losses.append(loss)
+
+# Plot regression line 
+plt.figure(figsize=(12,4)) plt.subplot(1,2,1)
+plt.scatter(X, y, color='blue', label='Data Points') plt.plot(X, m * X + c, color='red', label='Fitted Line') plt.legend()
+plt.title("Linear Regression using Gradient Descent")
+
+# Plot loss curve 
+plt.subplot(1,2,2) plt.plot(losses, color='green') plt.title("Loss vs Epochs") plt.xlabel("Epochs") plt.ylabel("MSE Loss") plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 4
+AIM: Comparison of classification accuracy of SVM and CNN for the dataset. 
+
+THEORY:
+Support Vector Machine (SVM) and Convolutional Neural Network (CNN) are both used for classification but differ fundamentally in approach and structure.
+SVM is a classical machine learning algorithm that works by finding an optimal hyperplane that separates data points of different classes with maximum margin. It performs well on smaller and linearly separable datasets and can use kernel functions to handle non-linear data. However, it requires manual feature extraction and tends to perform poorly on complex image data.
+CNN, on the other hand, is a deep learning architecture specifically designed for image processing. It automatically extracts features using convolutional layers, pooling layers, and fully connected layers. CNNs can capture spatial hierarchies and patterns in images, achieving higher accuracy on large and complex datasets.
+
+Feature		SVM		CNN Type	Machine Learning	Deep Learning
+
+Feature Extraction
+
+Manual	Automatic
+
+Dataset Size	Small	Large
+Accuracy	Moderate	High
+Training Time	Short	Long
+
+CODE:
+# --- Compare SVM and CNN on digits dataset --- 
+from sklearn import datasets
+from sklearn.model_selection import train_test_split from sklearn.svm import SVC
+from tensorflow.keras import layers, models
+from tensorflow.keras.utils import to_categorical import matplotlib.pyplot as plt
+import numpy as np
+
+# Load dataset
+digits = datasets.load_digits()
+X = digits.images y = 
+Saurav Malik	06017702722
+digits.target
+
+#	SVM
+X_flat = X.reshape((len(X), -1))
+X_train, X_test, y_train, y_test = train_test_split(X_flat, y, test_size=0.2, 
+random_state=42)
+svm = SVC(kernel='linear') svm.fit(X_train, y_train)
+svm_acc = svm.score(X_test, y_test)
+
+#	CNN
+X = X / 16.0
+X = X[..., np.newaxis] y = to_categorical(y)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+cnn = models.Sequential([
+layers.Conv2D(16, (3,3), activation='relu', input_shape=(8,8,1)), layers.MaxPooling2D(2,2),
+layers.Flatten(),
+layers.Dense(32, activation='relu'), layers.Dense(10, activation='softmax')
+])
+cnn.compile(optimizer='adam',	loss='categorical_crossentropy', metrics=['accuracy'])
+cnn.fit(X_train, y_train, epochs=10, verbose=0) cnn_acc = cnn.evaluate(X_test, y_test, verbose=0)[1]
+
+# Visualization
+labels = ['SVM', 'CNN'] accuracy = [svm_acc, cnn_acc]
+
+plt.bar(labels, accuracy, color=['skyblue','orange']) plt.title("Comparison of Classification Accuracy") plt.ylabel("Accuracy")
+plt.ylim(0,1) plt.show()
+
+print(f"SVM Accuracy: {svm_acc:.4f}") print(f"CNN Accuracy: {cnn_acc:.4f}")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 5
+AIM: Implementation basic Image Handling and processing operations on the image.
+
+THEORY:
+Image handling and processing form the foundation of computer vision tasks. Using tools like OpenCV or Pillow (PIL), we can perform basic operations such as loading, displaying, resizing, and saving images.
+Some fundamental operations include:
+
+Reading and Displaying Images: cv2.imread() and cv2.imshow() are used to load and display images.
+Resizing and Cropping: Used to change image dimensions or extract regions of interest.
+Color Space Conversion: Conversion between BGR, RGB, and grayscale using cv2.cvtColor().
+Blurring and Filtering: Gaussian and median filters are applied to reduce noise.
+Edge Detection: Techniques like Sobel or Canny edge detection highlight image boundaries.
+These operations are essential for preprocessing before applying advanced techniques like segmentation, recognition, or feature extraction. They help enhance image quality and improve algorithm performance.
+CODE:
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow import urllib.request
+
+# Download image from a URL 
+url="https://raw.githubusercontent.com/opencv/opencv/master/samples/data/smart ies.png"
+
+urllib.request.urlretrieve(url, "smarties.png") # Load the image
+img = cv2.imread("smarties.png")
+
+# Convert and process
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+blur = cv2.GaussianBlur(img, (7,7), 0)
+edges = cv2.Canny(img, 100, 200)
+
+print("Original Image") cv2_imshow(img) 
+print("Grayscale Image") cv2_imshow(gray) 
+print("Blurred Image") cv2_imshow(blur) 
+print("Edge Detection") cv2_imshow(edges)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 6
+AIM: Implementation of Geometric Tran sformation.
+
+THEORY:
+Geometric transformations are techniques used to change the geometric properties of an image, such as its position, orientation, or size. These include translation, rotation, scaling, and shearing.
+Translation: Shifts the image in the X or Y direction.
+Rotation: Rotates the image around a given center point by a specific angle.
+Scaling: Enlarges or reduces the image dimensions.
+Shearing: Distorts the image shape along an axis.
+
+These transformations are represented using transformation matrices and applied using OpenCV functions like cv2.getRotationMatrix2D() and cv2.warpAffine().
+Geometric transformations are useful in image alignment, registration, and augmentation processes where images need to be normalized or modified without changing their content.
+
+CODE:
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow
+
+url	= "https://raw.githubusercontent.com/opencv/opencv/master/samples/data/smarties. png"
+
+urllib.request.urlretrieve(url, "smarties.png") # Load the image
+img = cv2.imread("smarties.png") rows, cols = img.shape[:2]
+# Translation
+M_translate = np.float32([[1, 0, 100], [0, 1, 50]]) 
+translated = cv2.warpAffine(img, M_translate, (cols, rows))
+
+# Rotation
+M_rotate = cv2.getRotationMatrix2D((cols/2, rows/2), 45, 1) 
+rotated = cv2.warpAffine(img, M_rotate, (cols, rows))
+# Scaling
+scaled = cv2.resize(img, None, fx=1.5, fy=1.5)
+
+
+print("Translated Image") cv2_imshow(translated) 
+print("Rotated Image") cv2_imshow(rotated) 
+print("Scaled Image") cv2_imshow(scaled)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 7
+AIM: Implementation of Perspective Transformation.
+
+THEORY:
+Perspective Transformation is a technique used to change the viewpoint of an image, giving a 3D depth effect. It maps a quadrilateral region in one image to another quadrilateral in a different image using a 3×3 transformation matrix.
+This transformation is used when the camera’s viewpoint changes, such as when converting a tilted	document	image	into	a	top-down	view. It can be performed using OpenCV functions:
+cv2.getPerspectiveTransform(pts1, pts2) – computes the transformation matrix.
+cv2.warpPerspective(image, M, size) – applies the transformation.
+
+Applications include document scanning, aerial image correction, and augmented reality. It’s
+essential for tasks requiring a change in image viewpoint while maintaining geometry.
+
+CODE:
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow import urllib.request
+
+# Download sudoku image 
+Url="https://raw.githubusercontent.com/opencv/opencv/master/samples/data/sudok u.png"
+urllib.request.urlretrieve(url, "sudoku.png")
+
+# Load image
+img = cv2.imread("sudoku.png") rows, cols, ch = img.shape
+
+# Define source and destination points
+pts1 = np.float32([[56,65],[368,52],[28,387],[389,390]])
+pts2 = np.float32([[0,0],[300,0],[0,300],[300,300]])
+
+M = cv2.getPerspectiveTransform(pts1, pts2) dst = cv2.warpPerspective(img, M, (300,300))
+
+print("Original Image") cv2_imshow(img)
+print("Perspective Transformed Image") cv2_imshow(dst)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 8
+AIM: Implementation of Camera Calibration
+
+THEORY:
+Camera calibration is the process of estimating a camera’s internal parameters (intrinsic) and lens distortion coefficients. It ensures that 3D real-world measurements can be accurately projected onto 2D image coordinates.
+The process typically involves:
+
+Capturing multiple images of a chessboard pattern from different angles.
+Detecting corners using cv2.findChessboardCorners().
+Using cv2.calibrateCamera() to compute the camera matrix and distortion coefficients.
+Calibration helps correct distortions caused by lenses, such as barrel or pincushion effects. It is crucial for 3D reconstruction, stereo vision, and augmented reality applications where accurate measurements and spatial mapping are required.
+
+CODE:
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt from urllib.request import urlopen
+from google.colab.patches import cv2_imshow
+
+url="https://raw.githubusercontent.com/opencv/opencv/master/samples/data/right 01.jpg" # Changed URL
+
+# Read image from URL 
+resp = urlopen(url)
+image = np.asarray(bytearray(resp.read()), dtype="uint8") img = cv2.imdecode(image, cv2.IMREAD_COLOR)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+# Display grayscale image for inspection 
+print("Grayscale image:") cv2_imshow(gray)
+
+# Define the chessboard pattern size (number of inner corners per row and column)
+pattern_size = (9, 6) 
+# This pattern size should work for right01.jpg
+
+# Try to find chessboard corners
+ret, corners = cv2.findChessboardCorners(gray, pattern_size, None)
+
+if ret:
+# Refine corner detection for accuracy
+criteria = (cv2.TermCriteria_EPS + cv2.TermCriteria_MAX_ITER, 30, 0.001) 
+corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), criteria)
+
+# Draw and visualize detected corners 
+cv2.drawChessboardCorners(img, pattern_size, corners2, ret) 
+plt.figure(figsize=(8, 6))
+plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+plt.title("✅ Detected Chessboard Corners (Camera Calibration)") plt.axis('off')
+plt.show()
+
+print("✅ Chessboard corners detected successfully!") else:
+print("❌ Chessboard corners not detected. Try adjusting pattern_size or image.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EXPERIMENT 9
+AIM: Compute Fundamental Matrix.
+
+THEORY:
+The Fundamental Matrix (F) defines the intrinsic geometric relationship between two images of the same scene taken from different viewpoints. It relates corresponding points xxx and x′x'x′ in the two images through the equation:
+
+
+It is a 3×3 rank-2 matrix that encapsulates the epipolar geometry of stereo images.
+
+In OpenCV, it is computed using the cv2.findFundamentalMat() function by passing matched	feature	points	from	both	images. This matrix is essential in stereo vision, as it allows finding epipolar lines — lines along which corresponding points must lie.
+The Fundamental Matrix plays a key role in 3D reconstruction, depth estimation, and camera motion analysis, making it an important concept in computer vision.
+
+CODE:
+import cv2
+import numpy as np import urllib.request
+from google.colab.patches import cv2_imshow
+
+# 🔹 Download stereo pair from GitHub 
+url_left="https://raw.githubusercontent.com/opencv/opencv/master/samples/data/ left01.jpg" url_right="https://raw.githubusercontent.com/opencv/opencv/master/samples/data
+/right01.jpg" 
+urllib.request.urlretrieve(url_left, "left.jpg")
+urllib.request.urlretrieve(url_right, "right.jpg")
+
+# Read and resize for display 
+img1 = cv2.imread("left.jpg") 
+img2 = cv2.imread("right.jpg")
+img1 = cv2.resize(img1, (400, 300))
+img2 = cv2.resize(img2, (400, 300))
+
+# 🔹 Detect ORB keypoints and descriptors 
+orb = cv2.ORB_create()
+kp1, des1 = orb.detectAndCompute(img1, None)
+kp2, des2 = orb.detectAndCompute(img2, None)
+
+# 🔹 Match descriptors using Brute Force matcher
+bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True) 
+matches = bf.match(des1, des2)
+matches = sorted(matches, key=lambda x: x.distance)
+
+# Take top matches for computing Fundamental Matrix
+pts1 = np.float32([kp1[m.queryIdx].pt for m in matches[:20]]) 
+pts2 = np.float32([kp2[m.trainIdx].pt for m in matches[:20]])
+
+# 🔹 Compute Fundamental Matrix
+F, mask = cv2.findFundamentalMat(pts1, pts2, cv2.FM_LMEDS) 
+print("✅ Fundamental Matrix:\n", F)
+
+# 🔹 Draw matches for visualization
+matched = cv2.drawMatches(img1, kp1, img2, kp2, matches[:15], None, flags=2) cv2_imshow(matched)
+
+
+
+
+
+
+
+
+
+
